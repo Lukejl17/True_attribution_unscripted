@@ -735,6 +735,7 @@
         },
         totalPaid: {
           spend: 9039, installs: 750, trials: 134, conversions: 26, subs: 21,
+          installsWoW: 27, trialsWoW: 33, conversionsWoW: 8, subsWoW: 110,
           cpi: 12.05, cpt: 67.33, cac: 191.29, roas: -0.05,
           installToTrial: 17.89, installToTrialWoW: 4,
           trialToPaid: 35.06, trialToPaidWoW: 4
@@ -778,6 +779,7 @@
         },
         totalPaid: {
           spend: 6925, installs: 589, trials: 101, conversions: 24, subs: 10,
+          installsWoW: 17, trialsWoW: 25, conversionsWoW: -31, subsWoW: 43,
           cpi: 11.76, cpt: 68.69, cac: 207.04, roas: 0.84,
           installToTrial: 17.13, installToTrialWoW: 7,
           trialToPaid: 33.66, trialToPaidWoW: -37
@@ -821,6 +823,7 @@
         },
         totalPaid: {
           spend: 5850, installs: 505, trials: 81, conversions: 35, subs: 7,
+          installsWoW: null, trialsWoW: null, conversionsWoW: null, subsWoW: null,
           cpi: 11.58, cpt: 72.50, cac: 137.63, roas: 1.51,
           installToTrial: 16.04, installToTrialWoW: null,
           trialToPaid: 43.21, trialToPaidWoW: null
@@ -888,6 +891,17 @@
               </span>
             </div>
             <div className="metric-item">
+              <span className="metric-label">CPT</span>
+              <span>
+                <span className="metric-value">{platformData.cpt > 0 ? formatCurrency(platformData.cpt) : '—'}</span>
+                {platformData.cptWoW !== null && platformData.cptWoW !== 0 && platformData.cpt > 0 && (
+                  <span className={`metric-change ${platformData.cptWoW < 0 ? 'up' : 'down'}`}>
+                    {formatPercent(platformData.cptWoW)}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="metric-item">
               <span className="metric-label">CAC</span>
               <span>
                 <span className="metric-value">{platformData.cac > 0 ? formatCurrency(platformData.cac) : '—'}</span>
@@ -940,6 +954,83 @@
         );
       };
 
+      const renderROASChart = () => {
+        const platforms = ['meta', 'apple', 'google'].filter(p => data[p].spend > 0);
+        const values = platforms.map(p => data[p].roas || 0);
+        const maxROAS = Math.max(...values, 2);
+
+        return (
+          <div className="chart-card">
+            <div className="chart-title">Net ROAS (1.0x = Break-even)</div>
+            <div style={{position: 'relative', paddingTop: '24px'}}>
+              <div style={{
+                position: 'absolute', left: '50%', top: 0, bottom: 0,
+                width: 2, background: 'var(--red)', zIndex: 10
+              }}></div>
+              <div style={{
+                position: 'absolute', left: '50%', top: 2,
+                transform: 'translateX(-50%)',
+                fontSize: '0.7rem', fontWeight: 600, color: 'var(--red)',
+                whiteSpace: 'nowrap'
+              }}>1.0x break-even</div>
+              <div className="chart-bars">
+                {platforms.map((platform, idx) => {
+                  const value = data[platform].roas || 0;
+                  const isProfitable = value >= 1;
+                  const displayValue = formatROAS(value);
+                  let barLeft, barWidth, barStyle;
+                  if (isProfitable) {
+                    barLeft = 50;
+                    barWidth = Math.min(((value - 1) / (maxROAS - 1)) * 50, 50);
+                    barStyle = {
+                      background: platform === 'apple'
+                        ? 'linear-gradient(90deg, #4a9a4a, #2d7a2d)'
+                        : platform === 'meta'
+                        ? 'linear-gradient(90deg, #2a8aff, #006acc)'
+                        : 'linear-gradient(90deg, #5a9af4, #3367d6)',
+                      borderRadius: '0 8px 8px 0',
+                      justifyContent: 'flex-end',
+                      paddingRight: '0.75rem',
+                      paddingLeft: 0
+                    };
+                  } else {
+                    const coverage = (value / 1) * 50;
+                    barLeft = coverage;
+                    barWidth = 50 - coverage;
+                    barStyle = {
+                      background: 'linear-gradient(90deg, var(--red), #e85844)',
+                      borderRadius: '8px 0 0 8px',
+                      justifyContent: 'flex-start',
+                      paddingLeft: '0.5rem',
+                      paddingRight: 0
+                    };
+                  }
+                  return (
+                    <div key={idx} className="chart-bar-row">
+                      <div className="chart-bar-label">{platform.charAt(0).toUpperCase() + platform.slice(1)}</div>
+                      <div className="chart-bar-container">
+                        <div style={{
+                          position: 'absolute',
+                          left: `${barLeft}%`,
+                          width: `${barWidth}%`,
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          zIndex: 5,
+                          ...barStyle
+                        }}>
+                          <span className="chart-bar-value" style={{color: 'white'}}>{displayValue}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
       const calculateMTD = () => {
         const weeks = Object.keys(DATA).reverse(); // Oldest to newest
         const marchWeeks = weeks.filter(w => w.includes('Mar'));
@@ -965,6 +1056,19 @@
           mtdSpend, mtdRev, mtdROAS, daysElapsed, daysRemaining, progressPercent,
           projectedSpend, projectedRev, projectedROAS
         };
+      };
+
+      const calculateMTDPlatform = (platformKey) => {
+        const marchWeeks = Object.keys(DATA).filter(w => w.includes('Mar'));
+        const mtdSpend = marchWeeks.reduce((sum, week) => sum + (DATA[week][platformKey]?.spend || 0), 0);
+        const mtdInstalls = marchWeeks.reduce((sum, week) => sum + (DATA[week][platformKey]?.installs || 0), 0);
+        const mtdRev = marchWeeks.reduce((sum, week) => {
+          const p = DATA[week][platformKey];
+          return sum + (p ? p.spend * p.roas : 0);
+        }, 0);
+        const mtdROAS = mtdSpend > 0 ? mtdRev / mtdSpend : 0;
+        const avgCPI = mtdInstalls > 0 ? mtdSpend / mtdInstalls : 0;
+        return { mtdSpend, mtdInstalls, mtdROAS, avgCPI };
       };
 
       const mtd = calculateMTD();
@@ -1111,6 +1215,11 @@
                             </span>
                             <span className="funnel-stage-value">
                               {data.totalPaid[stage].toLocaleString()}
+                              {data.totalPaid[`${stage}WoW`] !== null && data.totalPaid[`${stage}WoW`] !== undefined && (
+                                <span className={`metric-change ${data.totalPaid[`${stage}WoW`] > 0 ? 'up' : 'down'}`} style={{fontSize: '0.8rem', marginLeft: '0.5rem'}}>
+                                  {formatPercent(data.totalPaid[`${stage}WoW`])}
+                                </span>
+                              )}
                             </span>
                           </div>
                         </div>
@@ -1149,7 +1258,7 @@
               {renderComparisonChart('Cost Per Install (CPI)', 'cpi')}
               {renderComparisonChart('Cost Per Trial (CPT)', 'cpt')}
               {renderComparisonChart('Customer Acquisition Cost (CAC)', 'cac')}
-              {renderComparisonChart('Net ROAS', 'roas', true)}
+              {renderROASChart()}
             </div>
           </div>
 
@@ -1200,6 +1309,43 @@
                   <div className="mtd-projection-label">Projected ROAS</div>
                   <div className="mtd-projection-value">{formatROAS(mtd.projectedROAS)}</div>
                 </div>
+              </div>
+            </div>
+
+            <div style={{marginTop: '1.5rem'}}>
+              <div style={{fontSize: '1.3rem', fontWeight: 700, color: 'white', marginBottom: '1rem'}}>MTD Platform Breakdown</div>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.25rem'}}>
+                {[
+                  {key: 'meta', name: 'Meta', color: '#0084FF'},
+                  {key: 'apple', name: 'Apple', color: '#000000'},
+                  {key: 'google', name: 'Google', color: '#4285F4'}
+                ].map(({key, name, color}) => {
+                  const pd = calculateMTDPlatform(key);
+                  return (
+                    <div key={key} className="mtd-card" style={{position: 'relative', overflow: 'hidden'}}>
+                      <div style={{position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: color}}></div>
+                      <div className="mtd-title" style={{fontSize: '1.1rem'}}>{name} MTD</div>
+                      <div className="mtd-stats">
+                        <div className="mtd-stat">
+                          <div className="mtd-stat-label">MTD Spend</div>
+                          <div className="mtd-stat-value" style={{fontSize: '1.3rem'}}>{formatCurrency(Math.round(pd.mtdSpend))}</div>
+                        </div>
+                        <div className="mtd-stat">
+                          <div className="mtd-stat-label">MTD Installs</div>
+                          <div className="mtd-stat-value" style={{fontSize: '1.3rem'}}>{pd.mtdInstalls.toLocaleString()}</div>
+                        </div>
+                        <div className="mtd-stat">
+                          <div className="mtd-stat-label">Avg ROAS</div>
+                          <div className="mtd-stat-value" style={{fontSize: '1.3rem', color: pd.mtdROAS >= 1 ? 'var(--success)' : pd.mtdROAS > 0 ? 'var(--red)' : 'var(--mid-green)'}}>{pd.mtdROAS > 0 ? formatROAS(pd.mtdROAS) : '—'}</div>
+                        </div>
+                        <div className="mtd-stat">
+                          <div className="mtd-stat-label">Avg CPI</div>
+                          <div className="mtd-stat-value" style={{fontSize: '1.3rem'}}>{pd.avgCPI > 0 ? `A$${pd.avgCPI.toFixed(2)}` : '—'}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
