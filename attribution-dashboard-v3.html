@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>True Attribution Analytics Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --dark-green: #1D271D;
+      --mid-green: #808D65;
+      --light-green: #B8C99E;
+      --cream: #F1F4EC;
+      --off-white: #F2F2F2;
+      --yellow: #FAD471;
+      --blue: #6A9DB3;
+      --red: #D53C27;
+      --success: #92A870;
+      --orange: #E8A87C;
+    }
+    
+    body {
+      font-family: 'Poppins', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1D271D 0%, #2a3a2a 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      letter-spacing: -0.02em;
+    }
+    
+    .week-selector {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    
+    .week-selector label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dark-green);
+    }
+    
+    .week-selector select {
+      padding: 0.6rem 1rem;
+      border: 2px solid var(--light-green);
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      background: white;
+      color: var(--dark-green);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .week-selector select:hover {
+      border-color: var(--mid-green);
+    }
+    
+    .tab-navigation {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 2px solid var(--cream);
+      padding-bottom: 0;
+    }
+    
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--mid-green);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+      top: 2px;
+    }
+    
+    .tab-button:hover {
+      color: var(--dark-green);
+    }
+    
+    .tab-button.active {
+      color: var(--dark-green);
+      border-bottom-color: var(--yellow);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .recommendations-box {
+      background: linear-gradient(135deg, #D53C27 0%, #c43520 100%);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      color: white;
+      box-shadow: 0 4px 20px rgba(213, 60, 39, 0.3);
+    }
+    
+    .recommendations-box h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .recommendations-box h2::before {
+      content: '⚠️';
+      font-size: 1.5rem;
+    }
+    
+    .recommendations-box p {
+      font-size: 1rem;
+      line-height: 1.6;
+      opacity: 0.95;
+    }
+    
+    .recommendations-box strong {
+      font-weight: 700;
+      color: var(--yellow);
+    }
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .summary-card-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--mid-green);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-card-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-card-change {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+    }
+    
+    .summary-card-change.positive {
+      color: var(--success);
+      background: rgba(146, 168, 112, 0.1);
+    }
+    
+    .summary-card-change.negative {
+      color: var(--red);
+      background: rgba(213, 60, 39, 0.1);
+    }
+    
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    .platform-card {
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .platform-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+    
+    .platform-card.meta::before {
+      background: #0084FF;
+    }
+    
+    .platform-card.apple::before {
+      background: #000000;
+    }
+    
+    .platform-card.google::before {
+      background: #4285F4;
+    }
+    
+    .platform-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .platform-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark-green);
+    }
+    
+    .action-badge {
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    
+    .action-badge.SCALE {
+      background: var(--success);
+      color: white;
+    }
+    
+    .action-badge.HOLD {
+      background: var(--yellow);
+      color: var(--dark-green);
+    }
+    
+    .action-badge.MONITOR {
+      background: var(--blue);
+      color: white;
+    }
+    
+    .action-badge.PAUSED {
+      background: #999;
+      color: white;
+    }
+    
+    .platform-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+    }
+    
+    .metric-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--mid-green);
+    }
+    
+    .metric-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .metric-change {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 0.4rem;
+    }
+    
+    .metric-change.up {
+      color: var(--success);
+    }
+    
+    .metric-change.down {
+      color: var(--red);
+    }
+    
+    .platform-note {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--dark-green);
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .platform-note::before {
+      content: '📊';
+      flex-shrink: 0;
+    }
+    
+    .comparison-charts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .chart-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .chart-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .chart-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    
+    .chart-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .chart-bar-label {
+      width: 60px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--dark-green);
+    }
+    
+    .chart-bar-container {
+      flex: 1;
+      height: 40px;
+      background: var(--off-white);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .chart-bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      transition: width 0.8s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 0.75rem;
+    }
+    
+    .chart-bar-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .chart-bar-fill.meta {
+      background: linear-gradient(90deg, #0084FF 0%, #0073e6 100%);
+    }
+    
+    .chart-bar-fill.apple {
+      background: linear-gradient(90deg, #333 0%, #000 100%);
+    }
+    
+    .chart-bar-fill.google {
+      background: linear-gradient(90deg, #4285F4 0%, #3367d6 100%);
+    }
+    
+    .breakeven-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--red);
+      z-index: 1;
+    }
+    
+    .breakeven-label {
+      position: absolute;
+      left: 50%;
+      top: -20px;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--red);
+    }
+    
+    .mtd-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .mtd-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .mtd-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      margin-bottom: 1.5rem;
+    }
+    
+    .mtd-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .mtd-stat {
+      padding: 1rem;
+      background: var(--cream);
+      border-radius: 12px;
+    }
+    
+    .mtd-stat-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--mid-green);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    
+    .mtd-stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .mtd-progress {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--off-white);
+      border-radius: 12px;
+    }
+    
+    .mtd-progress-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--dark-green);
+      margin-bottom: 0.5rem;
+    }
+    
+    .mtd-progress-bar {
+      height: 12px;
+      background: var(--cream);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    
+    .mtd-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success) 0%, var(--light-green) 100%);
+      transition: width 0.8s ease-out;
+    }
+    
+    .mtd-progress-text {
+      font-size: 0.8rem;
+      color: var(--mid-green);
+    }
+    
+    .mtd-projection {
+      background: linear-gradient(135deg, var(--dark-green) 0%, #2a3a2a 100%);
+      color: white;
+    }
+    
+    .mtd-projection .mtd-title {
+      color: white;
+    }
+    
+    .mtd-projection-item {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    
+    .mtd-projection-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .mtd-projection-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+    
+    .mtd-projection-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .funnel-section {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .funnel-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .funnel-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+    
+    .funnel-column h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      color: var(--dark-green);
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .funnel-stage {
+      margin-bottom: 1rem;
+    }
+    
+    .funnel-bar {
+      background: var(--cream);
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    
+    .funnel-bar:hover {
+      transform: translateX(4px);
+    }
+    
+    .funnel-bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, var(--light-green), var(--success));
+      opacity: 0.15;
+      transition: width 0.8s ease-out;
+    }
+    
+    .funnel-bar-content {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .funnel-stage-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--mid-green);
+    }
+    
+    .funnel-stage-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark-green);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .funnel-rate {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .funnel-rate-label {
+      font-size: 0.85rem;
+      color: var(--mid-green);
+    }
+    
+    .funnel-rate-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark-green);
+    }
+    
+    @media (max-width: 1400px) {
+      .platform-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .comparison-charts {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 900px) {
+      .summary-cards,
+      .platform-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .mtd-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .funnel-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    
+    const DATA = {
+      'Mar 9-15, 2026': {
+        dateRange: 'Mar 9-15, 2026',
+        totalSpend: 9039,
+        blendedNetRev: 33821,
+        blendedNetROAS: 4.74,
+        spendWoW: 31,
+        revWoW: -7,
+        roasWoW: -24,
+        recommendation: "Hold spend at $9k/week. Attribution fix deployed last Thursday - paid struggled post-fix (0.05x ROAS unprofitable), but blended remains strong at 4.74x. Apple crushing at 5.77x (+111% WoW). Google still zero conversions - investigate tracking.",
+        meta: {
+          spend: 7870, spendWoW: 29, installs: 436, installsWoW: 10,
+          cpi: 18.05, cpiWoW: 17, cpt: 89.72, cptWoW: 3,
+          cac: 290.50, cacWoW: 18, roas: 0.61, roasWoW: -13,
+          action: 'HOLD',
+          note: 'Meta struggled: 0.61x ROAS (down from 0.70x). CAC at $291. Continue holding spend, monitor for improvement.'
+        },
+        apple: {
+          spend: 656, spendWoW: 16, installs: 273, installsWoW: 63,
+          cpi: 2.40, cpiWoW: -29, cpt: 14.11, cptWoW: -23,
+          cac: 32.56, cacWoW: -51, roas: 5.77, roasWoW: 111,
+          action: 'SCALE',
+          note: 'Apple EXPLODED: 5.77x ROAS (+111% WoW)! CAC dropped 51% to $32.56. Best performer - clear scale signal.'
+        },
+        google: {
+          spend: 513, spendWoW: 119, installs: 41, installsWoW: 78,
+          cpi: 12.51, cpiWoW: 23, cpt: 0, cptWoW: 0,
+          cac: 0, cacWoW: 0, roas: 0, roasWoW: 0,
+          action: 'MONITOR',
+          note: 'Second week of Google iOS - $513 spent, 41 installs, but still zero conversions attributed. Fix tracking ASAP.'
+        },
+        organic: {
+          installs: 995, installsWoW: -12, trials: 205, trialsWoW: 15,
+          conversions: 48, conversionsWoW: -14, subs: 35, subsWoW: -19,
+          installToTrial: 20.60, installToTrialWoW: 31,
+          trialToPaid: 40.49, trialToPaidWoW: -27
+        },
+        totalPaid: {
+          spend: 9039, installs: 750, trials: 134, conversions: 26, subs: 21,
+          cpi: 12.05, cpt: 67.33, cac: 191.29, roas: -0.05,
+          installToTrial: 17.89, installToTrialWoW: 4,
+          trialToPaid: 35.06, trialToPaidWoW: 4
+        }
+      },
+      'Mar 2-8, 2026': {
+        dateRange: 'Mar 2-8, 2026',
+        totalSpend: 6925,
+        blendedNetRev: 36401,
+        blendedNetROAS: 6.26,
+        spendWoW: 18,
+        revWoW: -13,
+        roasWoW: -23,
+        recommendation: "Maintain spend at $6.9k/week. Attribution fix deployed Thursday - paid struggled pre-fix (0.84x ROAS), but blended remains strong at 6.26x. Monitor weekend data for post-fix uplift. Google zero conversions - investigate tracking.",
+        meta: {
+          spend: 6123, spendWoW: 11, installs: 398, installsWoW: -4,
+          cpi: 15.38, cpiWoW: 15, cpt: 87.52, cptWoW: -5,
+          cac: 246.14, cacWoW: 62, roas: 0.70, roasWoW: -27,
+          action: 'HOLD',
+          note: 'Meta struggled: 0.70x ROAS (down from 1.24x). CAC spiked 62% to $246. Attribution fix deployed Thursday - weekend data will show improvement.'
+        },
+        apple: {
+          spend: 568, spendWoW: 71, installs: 168, installsWoW: 83,
+          cpi: 3.38, cpiWoW: -6, cpt: 18.41, cptWoW: 16,
+          cac: 66.27, cacWoW: 25, roas: 2.73, roasWoW: -55,
+          action: 'HOLD',
+          note: 'Apple ROAS declined to 2.73x (down from 6.08x, -55% WoW). Still profitable. CPI excellent at $3.38. Attribution fix impact - hold and monitor.'
+        },
+        google: {
+          spend: 234, spendWoW: null, installs: 23, installsWoW: null,
+          cpi: 10.18, cpiWoW: null, cpt: 0, cptWoW: 0,
+          cac: 0, cacWoW: 0, roas: 0, roasWoW: 0,
+          action: 'MONITOR',
+          note: 'First week of Google iOS ads - $234 spent, 23 installs ($10.18 CPI), but zero conversions attributed. Investigate conversion tracking setup.'
+        },
+        organic: {
+          installs: 1133, installsWoW: -2, trials: 178, trialsWoW: 0,
+          conversions: 56, conversionsWoW: 10, subs: 43, subsWoW: 76,
+          installToTrial: 15.74, installToTrialWoW: 2,
+          trialToPaid: 55.56, trialToPaidWoW: 31
+        },
+        totalPaid: {
+          spend: 6925, installs: 589, trials: 101, conversions: 24, subs: 10,
+          cpi: 11.76, cpt: 68.69, cac: 207.04, roas: 0.84,
+          installToTrial: 17.13, installToTrialWoW: 7,
+          trialToPaid: 33.66, trialToPaidWoW: -37
+        }
+      },
+      'Feb 23 - Mar 1, 2026': {
+        dateRange: 'Feb 23 - Mar 1, 2026',
+        totalSpend: 5850,
+        blendedNetRev: 41931,
+        blendedNetROAS: 8.17,
+        spendWoW: 195,
+        revWoW: 7,
+        roasWoW: -59,
+        recommendation: "Scale conservatively to $6.9k/week. Blended ROAS at 8.17x (strong). Meta: 1.24x ROAS (profitable). Apple: 6.08x ROAS (excellent). Focus Apple scaling, Meta steady growth. Diversify with Google iOS test at $400/week.",
+        meta: {
+          spend: 5518, spendWoW: 179, installs: 413, installsWoW: 128,
+          cpi: 13.36, cpiWoW: 22, cpt: 92.31, cptWoW: 2,
+          cac: 152.29, cacWoW: -20, roas: 1.24, roasWoW: 45,
+          action: 'SCALE',
+          note: 'Meta profitable at 1.24x ROAS (+45% WoW). CPI at $13.36. Good foundation for scaling.'
+        },
+        apple: {
+          spend: 332, spendWoW: null, installs: 92, installsWoW: null,
+          cpi: 3.61, cpiWoW: null, cpt: 15.88, cptWoW: null,
+          cac: 52.93, cacWoW: null, roas: 6.08, roasWoW: null,
+          action: 'SCALE',
+          note: 'Apple excellent at 6.08x ROAS. CPI $3.61 (best in portfolio). Clear scale opportunity.'
+        },
+        google: {
+          spend: 0, spendWoW: 0, installs: 0, installsWoW: 0,
+          cpi: 0, cpiWoW: 0, cpt: 0, cptWoW: 0,
+          cac: 0, cacWoW: 0, roas: 0, roasWoW: 0,
+          action: 'PAUSED',
+          note: 'Not yet launched. Planning iOS test at $400/week.'
+        },
+        organic: {
+          installs: 1153, installsWoW: null, trials: 178, trialsWoW: null,
+          conversions: 51, conversionsWoW: null, subs: 24, subsWoW: null,
+          installToTrial: 15.43, installToTrialWoW: null,
+          trialToPaid: 42.13, trialToPaidWoW: null
+        },
+        totalPaid: {
+          spend: 5850, installs: 505, trials: 81, conversions: 35, subs: 7,
+          cpi: 11.58, cpt: 72.50, cac: 137.63, roas: 1.51,
+          installToTrial: 16.04, installToTrialWoW: null,
+          trialToPaid: 43.21, trialToPaidWoW: null
+        }
+      }
+    };
+
+    function Dashboard() {
+      const [selectedWeek, setSelectedWeek] = useState('Mar 9-15, 2026');
+      const [activeTab, setActiveTab] = useState('overview');
+      const data = DATA[selectedWeek];
+
+      const formatCurrency = (value) => `A$${value.toLocaleString()}`;
+      const formatPercent = (value) => `${value > 0 ? '+' : ''}${value}%`;
+      const formatROAS = (value) => `${value.toFixed(2)}x`;
+
+      const getChangeClass = (value, isROAS = false, isCost = false) => {
+        if (value === null || value === 0) return '';
+        if (isROAS || !isCost) {
+          return value > 0 ? 'positive' : 'negative';
+        }
+        return value > 0 ? 'negative' : 'positive';
+      };
+
+      const renderPlatformCard = (name, platformData, colorClass) => (
+        <div className={`platform-card ${colorClass}`}>
+          <div className="platform-header">
+            <div className="platform-name">{name}</div>
+            <div className={`action-badge ${platformData.action}`}>
+              {platformData.action}
+            </div>
+          </div>
+          <div className="platform-metrics">
+            <div className="metric-item">
+              <span className="metric-label">Spend</span>
+              <span>
+                <span className="metric-value">{formatCurrency(platformData.spend)}</span>
+                {platformData.spendWoW !== null && (
+                  <span className={`metric-change ${platformData.spendWoW > 0 ? 'up' : 'down'}`}>
+                    {formatPercent(platformData.spendWoW)}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-label">ROAS</span>
+              <span>
+                <span className="metric-value">{formatROAS(platformData.roas)}</span>
+                {platformData.roasWoW !== null && platformData.roasWoW !== 0 && (
+                  <span className={`metric-change ${platformData.roasWoW > 0 ? 'up' : 'down'}`}>
+                    {formatPercent(platformData.roasWoW)}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-label">CPI</span>
+              <span>
+                <span className="metric-value">{formatCurrency(platformData.cpi)}</span>
+                {platformData.cpiWoW !== null && platformData.cpiWoW !== 0 && (
+                  <span className={`metric-change ${platformData.cpiWoW < 0 ? 'up' : 'down'}`}>
+                    {formatPercent(platformData.cpiWoW)}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-label">CAC</span>
+              <span>
+                <span className="metric-value">{platformData.cac > 0 ? formatCurrency(platformData.cac) : '—'}</span>
+                {platformData.cacWoW !== null && platformData.cacWoW !== 0 && platformData.cac > 0 && (
+                  <span className={`metric-change ${platformData.cacWoW < 0 ? 'up' : 'down'}`}>
+                    {formatPercent(platformData.cacWoW)}
+                  </span>
+                )}
+              </span>
+            </div>
+          </div>
+          {platformData.note && (
+            <div className="platform-note">{platformData.note}</div>
+          )}
+        </div>
+      );
+
+      const renderComparisonChart = (title, metric, isROAS = false) => {
+        const platforms = ['meta', 'apple', 'google'].filter(p => data[p].spend > 0);
+        const values = platforms.map(p => data[p][metric] || 0);
+        const maxValue = Math.max(...values, isROAS ? 1 : 0);
+        const scale = isROAS ? maxValue * 2 : maxValue * 1.2;
+
+        return (
+          <div className="chart-card">
+            <div className="chart-title">{title}</div>
+            {isROAS && <div className="breakeven-label">1.0x Break-even</div>}
+            <div className="chart-bars" style={{position: 'relative'}}>
+              {isROAS && <div className="breakeven-line"></div>}
+              {platforms.map((platform, idx) => {
+                const value = data[platform][metric] || 0;
+                const width = scale > 0 ? (value / scale) * 100 : 0;
+                const displayValue = metric === 'roas' ? formatROAS(value) : 
+                                   (metric === 'cpi' || metric === 'cpt' || metric === 'cac') ? formatCurrency(value) : 
+                                   value.toLocaleString();
+                
+                return (
+                  <div key={idx} className="chart-bar-row">
+                    <div className="chart-bar-label">{platform.charAt(0).toUpperCase() + platform.slice(1)}</div>
+                    <div className="chart-bar-container">
+                      <div className={`chart-bar-fill ${platform}`} style={{width: `${width}%`}}>
+                        <span className="chart-bar-value">{displayValue}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      };
+
+      const calculateMTD = () => {
+        const weeks = Object.keys(DATA).reverse(); // Oldest to newest
+        const marchWeeks = weeks.filter(w => w.includes('Mar'));
+        
+        const mtdSpend = marchWeeks.reduce((sum, week) => sum + DATA[week].totalSpend, 0);
+        const mtdRev = marchWeeks.reduce((sum, week) => sum + DATA[week].blendedNetRev, 0);
+        const mtdROAS = mtdSpend > 0 ? mtdRev / mtdSpend : 0;
+        
+        // Calculate days elapsed (assuming 7 days per week)
+        const daysElapsed = marchWeeks.length * 7;
+        const daysInMarch = 31;
+        const daysRemaining = daysInMarch - daysElapsed;
+        const progressPercent = (daysElapsed / daysInMarch) * 100;
+        
+        // Project end of month (simple linear extrapolation)
+        const dailyAvgSpend = mtdSpend / daysElapsed;
+        const dailyAvgRev = mtdRev / daysElapsed;
+        const projectedSpend = mtdSpend + (dailyAvgSpend * daysRemaining);
+        const projectedRev = mtdRev + (dailyAvgRev * daysRemaining);
+        const projectedROAS = projectedSpend > 0 ? projectedRev / projectedSpend : 0;
+        
+        return {
+          mtdSpend, mtdRev, mtdROAS, daysElapsed, daysRemaining, progressPercent,
+          projectedSpend, projectedRev, projectedROAS
+        };
+      };
+
+      const mtd = calculateMTD();
+
+      return (
+        <div className="container">
+          <div className="header">
+            <div className="header-top">
+              <h1>True Attribution Analytics</h1>
+              <div className="week-selector">
+                <label>Week:</label>
+                <select value={selectedWeek} onChange={(e) => setSelectedWeek(e.target.value)}>
+                  {Object.keys(DATA).map(week => (
+                    <option key={week} value={week}>{week}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="tab-navigation">
+              <button 
+                className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Overview
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'comparison' ? 'active' : ''}`}
+                onClick={() => setActiveTab('comparison')}
+              >
+                Platform Comparison
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'mtd' ? 'active' : ''}`}
+                onClick={() => setActiveTab('mtd')}
+              >
+                Month-to-Date
+              </button>
+            </div>
+          </div>
+
+          {data.recommendation && (
+            <div className="recommendations-box">
+              <h2>Week Recommendation</h2>
+              <p>{data.recommendation}</p>
+            </div>
+          )}
+
+          <div className={`tab-content ${activeTab === 'overview' ? 'active' : ''}`}>
+            <div className="summary-cards">
+              <div className="summary-card">
+                <div className="summary-card-label">Total Spend</div>
+                <div className="summary-card-value">{formatCurrency(data.totalSpend)}</div>
+                <span className={`summary-card-change ${getChangeClass(data.spendWoW)}`}>
+                  {formatPercent(data.spendWoW)} WoW
+                </span>
+              </div>
+              <div className="summary-card">
+                <div className="summary-card-label">Blended Net Revenue</div>
+                <div className="summary-card-value">{formatCurrency(data.blendedNetRev)}</div>
+                <span className={`summary-card-change ${getChangeClass(data.revWoW)}`}>
+                  {formatPercent(data.revWoW)} WoW
+                </span>
+              </div>
+              <div className="summary-card">
+                <div className="summary-card-label">Blended Net ROAS</div>
+                <div className="summary-card-value">{formatROAS(data.blendedNetROAS)}</div>
+                <span className={`summary-card-change ${getChangeClass(data.roasWoW, true)}`}>
+                  {formatPercent(data.roasWoW)} WoW
+                </span>
+              </div>
+            </div>
+
+            <div className="platform-grid">
+              {renderPlatformCard('Meta', data.meta, 'meta')}
+              {renderPlatformCard('Apple', data.apple, 'apple')}
+              {renderPlatformCard('Google', data.google, 'google')}
+            </div>
+
+            <div className="funnel-section">
+              <div className="funnel-title">Conversion Funnel: Organic vs Paid</div>
+              <div className="funnel-columns">
+                <div className="funnel-column">
+                  <h3>Organic</h3>
+                  {['installs', 'trials', 'conversions', 'subs'].map(stage => {
+                    const maxValue = stage === 'installs' ? 1500 : stage === 'trials' ? 300 : stage === 'conversions' ? 100 : 60;
+                    const width = (data.organic[stage] / maxValue) * 100;
+                    return (
+                      <div key={stage} className="funnel-stage">
+                        <div className="funnel-bar">
+                          <div className="funnel-bar-fill" style={{width: `${width}%`}}></div>
+                          <div className="funnel-bar-content">
+                            <span className="funnel-stage-name">
+                              {stage.charAt(0).toUpperCase() + stage.slice(1)}
+                            </span>
+                            <span className="funnel-stage-value">
+                              {data.organic[stage].toLocaleString()}
+                              {data.organic[`${stage}WoW`] !== null && data.organic[`${stage}WoW`] !== undefined && (
+                                <span className={`metric-change ${data.organic[`${stage}WoW`] > 0 ? 'up' : 'down'}`} style={{fontSize: '0.8rem', marginLeft: '0.5rem'}}>
+                                  {formatPercent(data.organic[`${stage}WoW`])}
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="funnel-rate">
+                    <span className="funnel-rate-label">Install → Trial Rate</span>
+                    <span className="funnel-rate-value">
+                      {data.organic.installToTrial.toFixed(1)}%
+                      {data.organic.installToTrialWoW !== null && (
+                        <span className={`metric-change ${data.organic.installToTrialWoW > 0 ? 'up' : 'down'}`} style={{fontSize: '0.8rem', marginLeft: '0.5rem'}}>
+                          {formatPercent(data.organic.installToTrialWoW)}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="funnel-rate">
+                    <span className="funnel-rate-label">Trial → Paid Rate</span>
+                    <span className="funnel-rate-value">
+                      {data.organic.trialToPaid.toFixed(1)}%
+                      {data.organic.trialToPaidWoW !== null && (
+                        <span className={`metric-change ${data.organic.trialToPaidWoW > 0 ? 'up' : 'down'}`} style={{fontSize: '0.8rem', marginLeft: '0.5rem'}}>
+                          {formatPercent(data.organic.trialToPaidWoW)}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="funnel-column">
+                  <h3>Total Paid</h3>
+                  {['installs', 'trials', 'conversions', 'subs'].map(stage => {
+                    const maxValue = stage === 'installs' ? 1500 : stage === 'trials' ? 300 : stage === 'conversions' ? 100 : 60;
+                    const width = (data.totalPaid[stage] / maxValue) * 100;
+                    return (
+                      <div key={stage} className="funnel-stage">
+                        <div className="funnel-bar">
+                          <div className="funnel-bar-fill" style={{width: `${width}%`}}></div>
+                          <div className="funnel-bar-content">
+                            <span className="funnel-stage-name">
+                              {stage.charAt(0).toUpperCase() + stage.slice(1)}
+                            </span>
+                            <span className="funnel-stage-value">
+                              {data.totalPaid[stage].toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="funnel-rate">
+                    <span className="funnel-rate-label">Install → Trial Rate</span>
+                    <span className="funnel-rate-value">
+                      {data.totalPaid.installToTrial.toFixed(1)}%
+                      {data.totalPaid.installToTrialWoW !== null && (
+                        <span className={`metric-change ${data.totalPaid.installToTrialWoW > 0 ? 'up' : 'down'}`} style={{fontSize: '0.8rem', marginLeft: '0.5rem'}}>
+                          {formatPercent(data.totalPaid.installToTrialWoW)}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="funnel-rate">
+                    <span className="funnel-rate-label">Trial → Paid Rate</span>
+                    <span className="funnel-rate-value">
+                      {data.totalPaid.trialToPaid.toFixed(1)}%
+                      {data.totalPaid.trialToPaidWoW !== null && (
+                        <span className={`metric-change ${data.totalPaid.trialToPaidWoW > 0 ? 'up' : 'down'}`} style={{fontSize: '0.8rem', marginLeft: '0.5rem'}}>
+                          {formatPercent(data.totalPaid.trialToPaidWoW)}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={`tab-content ${activeTab === 'comparison' ? 'active' : ''}`}>
+            <div className="comparison-charts">
+              {renderComparisonChart('Cost Per Install (CPI)', 'cpi')}
+              {renderComparisonChart('Cost Per Trial (CPT)', 'cpt')}
+              {renderComparisonChart('Customer Acquisition Cost (CAC)', 'cac')}
+              {renderComparisonChart('Net ROAS', 'roas', true)}
+            </div>
+          </div>
+
+          <div className={`tab-content ${activeTab === 'mtd' ? 'active' : ''}`}>
+            <div className="mtd-grid">
+              <div className="mtd-card">
+                <div className="mtd-title">March 2026 Performance</div>
+                <div className="mtd-stats">
+                  <div className="mtd-stat">
+                    <div className="mtd-stat-label">MTD Spend</div>
+                    <div className="mtd-stat-value">{formatCurrency(Math.round(mtd.mtdSpend))}</div>
+                  </div>
+                  <div className="mtd-stat">
+                    <div className="mtd-stat-label">MTD Revenue</div>
+                    <div className="mtd-stat-value">{formatCurrency(Math.round(mtd.mtdRev))}</div>
+                  </div>
+                  <div className="mtd-stat">
+                    <div className="mtd-stat-label">MTD ROAS</div>
+                    <div className="mtd-stat-value">{formatROAS(mtd.mtdROAS)}</div>
+                  </div>
+                  <div className="mtd-stat">
+                    <div className="mtd-stat-label">Weeks Tracked</div>
+                    <div className="mtd-stat-value">{Object.keys(DATA).filter(w => w.includes('Mar')).length}</div>
+                  </div>
+                </div>
+                <div className="mtd-progress">
+                  <div className="mtd-progress-label">Month Progress</div>
+                  <div className="mtd-progress-bar">
+                    <div className="mtd-progress-fill" style={{width: `${mtd.progressPercent}%`}}></div>
+                  </div>
+                  <div className="mtd-progress-text">
+                    {mtd.daysElapsed} days elapsed • {mtd.daysRemaining} days remaining
+                  </div>
+                </div>
+              </div>
+
+              <div className="mtd-card mtd-projection">
+                <div className="mtd-title">End-of-Month Projections</div>
+                <div className="mtd-projection-item">
+                  <div className="mtd-projection-label">Projected Total Spend</div>
+                  <div className="mtd-projection-value">{formatCurrency(Math.round(mtd.projectedSpend))}</div>
+                </div>
+                <div className="mtd-projection-item">
+                  <div className="mtd-projection-label">Projected Total Revenue</div>
+                  <div className="mtd-projection-value">{formatCurrency(Math.round(mtd.projectedRev))}</div>
+                </div>
+                <div className="mtd-projection-item">
+                  <div className="mtd-projection-label">Projected ROAS</div>
+                  <div className="mtd-projection-value">{formatROAS(mtd.projectedROAS)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Dashboard />, document.getElementById('root'));
+  </script>
+</body>
+</html>
