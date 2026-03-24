@@ -705,6 +705,8 @@
         spendWoW: 31,
         revWoW: -7,
         roasWoW: -24,
+        activationRate: 13, activationRateWoW: 20,
+        onboardingCompletionRate: 43.93, onboardingCompletionRateWoW: -1,
         recommendation: "Hold spend at $9k/week. Attribution fix deployed last Thursday - paid struggled post-fix (0.05x ROAS unprofitable), but blended remains strong at 4.74x. Apple crushing at 5.77x (+111% WoW). Google still zero conversions - investigate tracking.",
         meta: {
           spend: 7870, spendWoW: 29, installs: 436, installsWoW: 10,
@@ -749,6 +751,8 @@
         spendWoW: 18,
         revWoW: -13,
         roasWoW: -23,
+        activationRate: 10.8, activationRateWoW: -6,
+        onboardingCompletionRate: 44.3, onboardingCompletionRateWoW: 4,
         recommendation: "Maintain spend at $6.9k/week. Attribution fix deployed Thursday - paid struggled pre-fix (0.84x ROAS), but blended remains strong at 6.26x. Monitor weekend data for post-fix uplift. Google zero conversions - investigate tracking.",
         meta: {
           spend: 6123, spendWoW: 11, installs: 398, installsWoW: -4,
@@ -793,6 +797,8 @@
         spendWoW: 195,
         revWoW: 7,
         roasWoW: -59,
+        activationRate: 11.43, activationRateWoW: null,
+        onboardingCompletionRate: 42.78, onboardingCompletionRateWoW: null,
         recommendation: "Scale conservatively to $6.9k/week. Blended ROAS at 8.17x (strong). Meta: 1.24x ROAS (profitable). Apple: 6.08x ROAS (excellent). Focus Apple scaling, Meta steady growth. Diversify with Google iOS test at $400/week.",
         meta: {
           spend: 5518, spendWoW: 179, installs: 413, installsWoW: 128,
@@ -1100,11 +1106,17 @@
               >
                 Platform Comparison
               </button>
-              <button 
+              <button
                 className={`tab-button ${activeTab === 'mtd' ? 'active' : ''}`}
                 onClick={() => setActiveTab('mtd')}
               >
                 Month-to-Date
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'activation' ? 'active' : ''}`}
+                onClick={() => setActiveTab('activation')}
+              >
+                Activation Rates
               </button>
             </div>
           </div>
@@ -1346,6 +1358,25 @@
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          </div>
+
+          <div className={`tab-content ${activeTab === 'activation' ? 'active' : ''}`}>
+            <div className="summary-cards" style={{gridTemplateColumns: 'repeat(2, 1fr)'}}>
+              <div className="summary-card">
+                <div className="summary-card-label">Onboarding Completion Rate</div>
+                <div className="summary-card-value">{data.onboardingCompletionRate != null ? data.onboardingCompletionRate.toFixed(1) + '%' : '—'}</div>
+                <span className={`summary-card-change ${data.onboardingCompletionRateWoW != null ? (data.onboardingCompletionRateWoW >= 0 ? 'positive' : 'negative') : ''}`}>
+                  {data.onboardingCompletionRateWoW != null ? (data.onboardingCompletionRateWoW >= 0 ? '+' : '') + data.onboardingCompletionRateWoW + '% WoW' : 'No prior data'}
+                </span>
+              </div>
+              <div className="summary-card">
+                <div className="summary-card-label">Activation Rate</div>
+                <div className="summary-card-value">{data.activationRate != null ? data.activationRate.toFixed(1) + '%' : '—'}</div>
+                <span className={`summary-card-change ${data.activationRateWoW != null ? (data.activationRateWoW >= 0 ? 'positive' : 'negative') : ''}`}>
+                  {data.activationRateWoW != null ? (data.activationRateWoW >= 0 ? '+' : '') + data.activationRateWoW + '% WoW' : 'No prior data'}
+                </span>
               </div>
             </div>
           </div>
