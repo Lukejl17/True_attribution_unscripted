@@ -697,6 +697,51 @@
     const { useState, useEffect } = React;
     
     const DATA = {
+      'Mar 16-22, 2026': {
+        dateRange: 'Mar 16-22, 2026',
+        totalSpend: 11043,
+        blendedNetRev: 48760,
+        blendedNetROAS: 5.42,
+        spendWoW: 22,
+        revWoW: 14,
+        roasWoW: -6,
+        recommendation: "Blended ROAS at 5.42x (down -6% WoW) remains strong, driven by organic surge (+131% installs to 2,787). Meta underperforming at 0.44x ROAS — hold spend and investigate conversion funnel. Apple still profitable at 1.50x but ROAS fell -60% WoW after spend scaled +133%; installs tripled but trials stayed flat at 30 — pause Apple scaling and monitor quality. Google third week with zero paid subs — fix conversion tracking or consider pausing.",
+        meta: {
+          spend: 9039, spendWoW: 15, installs: 513, installsWoW: 52,
+          cpi: 17.62, cpiWoW: -24, cpt: 100.44, cptWoW: -13,
+          cac: 1507, cacWoW: 72, roas: 0.44, roasWoW: -6,
+          action: 'HOLD',
+          note: 'Meta underperforming at 0.44x ROAS (-6% WoW). Only 6 new subs from 513 installs — CAC at $1,507 (+72% WoW). Hold spend and investigate conversion pipeline.'
+        },
+        apple: {
+          spend: 1528, spendWoW: 133, installs: 596, installsWoW: 239,
+          cpi: 2.56, cpiWoW: -31, cpt: 50.94, cptWoW: 133,
+          cac: 306, cacWoW: 179, roas: 1.50, roasWoW: -60,
+          action: 'HOLD',
+          note: 'Apple profitable at 1.50x ROAS but fell -60% WoW after +133% spend increase. Installs surged +239% but trials stayed flat at 30 — install quality declining. Pause scaling, monitor funnel.'
+        },
+        google: {
+          spend: 475, spendWoW: -7, installs: 12, installsWoW: -14,
+          cpi: 39.60, cpiWoW: 8, cpt: 237.59, cptWoW: null,
+          cac: 0, cacWoW: null, roas: 0, roasWoW: null,
+          action: 'MONITOR',
+          note: 'Google iOS week 3 — $475 spend, 12 installs ($39.60 CPI), 2 trials, zero paid subs. Fix conversion tracking or evaluate pausing.'
+        },
+        organic: {
+          installs: 2787, installsWoW: 131, trials: 285, trialsWoW: 14,
+          conversions: 80, conversionsWoW: 38, subs: 34, subsWoW: -21,
+          installToTrial: 10.23, installToTrialWoW: -50,
+          trialToPaid: 28.07, trialToPaidWoW: 21
+        },
+        totalPaid: {
+          spend: 11043, installs: 1121, trials: 122, conversions: 28, subs: 11,
+          cpi: 9.85, cpt: 90.51, cac: 1003.89, roas: 0.56,
+          installToTrial: 10.88, installToTrialWoW: -41,
+          trialToPaid: 22.95, trialToPaidWoW: 18
+        },
+        activationRate: 5.4, activationRateWoW: -58,
+        onboardingCompletionRate: 45.3, onboardingCompletionRateWoW: 3
+      },
       'Mar 9-15, 2026': {
         dateRange: 'Mar 9-15, 2026',
         totalSpend: 9039,
@@ -838,7 +883,7 @@
     };
 
     function Dashboard() {
-      const [selectedWeek, setSelectedWeek] = useState('Mar 9-15, 2026');
+      const [selectedWeek, setSelectedWeek] = useState(Object.keys(DATA)[0]);
       const [activeTab, setActiveTab] = useState('overview');
       const data = DATA[selectedWeek];
 
