@@ -701,44 +701,44 @@
         dateRange: 'Mar 23-29, 2026',
         totalSpend: 13986,
         blendedNetRev: 46735,
-        blendedNetROAS: 4.34,
+        blendedNetROAS: 3.3,
         spendWoW: 27,
         revWoW: 24,
-        roasWoW: -2,
-        recommendation: "Total spend +27% WoW to $13,986. Blended ROAS at 4.34x (-2% WoW) remains healthy driven by organic. Meta CPI spiked to $23.99 (+45% WoW) — CAC at $3,016 with only 4 paid subs, 0.45x ROAS unprofitable. Apple ROAS fell to 1.39x (-51% WoW) with 2 paid subs. Google 0.26x with 0 paid subs. Hold all paid spend pending funnel investigation.",
+        roasWoW: -24,
+        recommendation: "Total spend +27% WoW to $13,986. Blended ROAS at 3.3x (-24% WoW) still healthy but declining, driven by organic. Meta True installs 538 (-1% WoW), CPI $22.43 (+35% WoW), CAC $364 (+11%), ROAS 0.48x — unprofitable, hold. Apple True installs 658 (-42% WoW after prior week surge), CPI $1.75 (+30%), CAC $77 (+26%), ROAS 2.29x (-20%) — profitable but conversion quality declining. Google 31 installs, CPI +125% WoW, 0 paid subs — monitor tracking.",
         meta: {
-          spend: 12065, spendWoW: 34, installs: 503, installsWoW: -8,
-          cpi: 23.99, cpiWoW: 45, cpt: null, cptWoW: null,
-          cac: 3016, cacWoW: 822, roas: 0.45, roasWoW: -2,
+          spend: 12065, spendWoW: 34, installs: 538, installsWoW: -1,
+          cpi: 22.43, cpiWoW: 35, cpt: 113, cptWoW: 19,
+          cac: 364, cacWoW: 11, roas: 0.48, roasWoW: 4,
           action: 'HOLD',
-          note: 'Meta spend +34% WoW to $12,065 with 503 installs (-8% WoW) — CPI surged to $23.99 (+45% WoW). Trial data unavailable; 4 paid subs at CAC $3,016. ROAS 0.45x — unprofitable, hold spend.'
+          note: 'True Meta installs 538 (-1% WoW), CPI $22.43 (+35% WoW), CPT $113 (+19%). CAC $364 (+11% WoW), ROAS 0.48x (+4% WoW) — unprofitable. Hold spend and monitor conversion funnel.'
         },
         apple: {
-          spend: 1152, spendWoW: -25, installs: 398, installsWoW: -65,
-          cpi: 2.89, cpiWoW: 116, cpt: 32.91, cptWoW: 22,
-          cac: 576, cacWoW: 829, roas: 1.39, roasWoW: -51,
+          spend: 1152, spendWoW: -25, installs: 658, installsWoW: -42,
+          cpi: 1.75, cpiWoW: 30, cpt: 20, cptWoW: -25,
+          cac: 77, cacWoW: 26, roas: 2.29, roasWoW: -20,
           action: 'HOLD',
-          note: 'Apple installs dropped to 398 (-65% WoW) with spend cut 25% to $1,152. CPI $2.89 (+116% WoW), CPT $32.91 (+22%). CAC $576 with 2 paid subs — ROAS 1.39x (-51% WoW). Hold until volume recovers.'
+          note: 'True Apple installs 658 (-42% WoW after prior week surge) with spend -25% to $1,152. CPI $1.75 (+30% WoW), CPT $20 (-25%). CAC $77 (+26% WoW), ROAS 2.29x (-20% WoW) — profitable but declining. Hold until conversion quality stabilises.'
         },
         google: {
           spend: 770, spendWoW: 62, installs: 31, installsWoW: -28,
-          cpi: 24.82, cpiWoW: 125, cpt: null, cptWoW: null,
-          cac: null, cacWoW: null, roas: 0.26, roasWoW: null,
+          cpi: 24.82, cpiWoW: 125, cpt: 0, cptWoW: -100,
+          cac: 769.5, cacWoW: 0, roas: 0.26, roasWoW: 0,
           action: 'MONITOR',
-          note: 'Google spend +62% to $770, 31 installs (-28% WoW), CPI $24.82 (+125%). 1 trial conversion, 0 paid subs — unprofitable at 0.26x ROAS. Monitor and investigate conversion tracking.'
+          note: 'True Google installs 31 (-28% WoW), CPI $24.82 (+125% WoW), CPT $0 (-100%). CAC $769.50, ROAS 0.26x. Zero paid subs — monitor and investigate conversion tracking.'
         },
         organic: {
-          installs: 1829, installsWoW: -17, trials: 262, trialsWoW: 17,
-          conversions: 83, conversionsWoW: 32, subs: 18, subsWoW: -33,
-          installToTrial: 14.33, installToTrialWoW: 40,
-          trialToPaid: 31.68, trialToPaidWoW: 13
+          installs: 1534, installsWoW: -30, trials: 220, trialsWoW: -2,
+          conversions: 70, conversionsWoW: 11, subs: 15, subsWoW: -44,
+          installToTrial: 14.34, installToTrialWoW: 40,
+          trialToPaid: 31.82, trialToPaidWoW: 13
         },
         totalPaid: {
-          spend: 13986, installs: 2761, trials: 297, conversions: 118, subs: 6,
-          installsWoW: 60, trialsWoW: 86, conversionsWoW: 219, subsWoW: -63,
-          cpi: 5.07, cpt: 47.09, cac: 2331, roas: -0.48,
-          installToTrial: 10.76, installToTrialWoW: 16,
-          trialToPaid: 39.73, trialToPaidWoW: 72
+          spend: 13986, installs: 1227, trials: 165, conversions: 41, subs: 8,
+          installsWoW: -29, trialsWoW: 3, conversionsWoW: 11, subsWoW: -50,
+          cpi: 11.40, cpt: 85, cac: 285, roas: -0.4,
+          installToTrial: 13.45, installToTrialWoW: 45,
+          trialToPaid: 24.85, trialToPaidWoW: 7
         },
         activationRate: null, activationRateWoW: null,
         onboardingCompletionRate: null, onboardingCompletionRateWoW: null
