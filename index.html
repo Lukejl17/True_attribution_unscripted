@@ -697,6 +697,52 @@
     const { useState, useEffect } = React;
     
     const DATA = {
+      'Mar 30 - Apr 5, 2026': {
+        dateRange: 'Mar 30 - Apr 5, 2026',
+        totalSpend: 16679,
+        blendedNetRev: 26254,
+        blendedNetROAS: 1.6,
+        spendWoW: 19,
+        revWoW: 15,
+        roasWoW: -4,
+        recommendation: "Total spend +19% WoW to $16,679. Blended ROAS 1.6x (-4% WoW) — organic carrying performance while paid channels lose money (paid ROAS -0.4x). Apple at 5.15x ROAS (+194% WoW) with CAC $33 (-57%) is the standout — scale immediately. Meta True installs 721 (+34%) but ROAS only 0.32x (-36%) — unprofitable, reduce and reallocate to Apple. Organic subs surged +200% WoW to 45, suggesting strong product-led growth.",
+        meta: {
+          spend: 15509, spendWoW: 29, installs: 721, installsWoW: 34,
+          cpi: 21.51, cpiWoW: -4, cpt: 141, cptWoW: 25,
+          cac: 549, cacWoW: 51, roas: 0.32, roasWoW: -36,
+          action: 'REDUCE',
+          note: 'True Meta installs 721 (+34% WoW), spend $15,509 (+29%). CPI $21.51 (-4% WoW), CPT $141 (+25%). CAC $549 (+51% WoW), ROAS 0.32x (-36% WoW) — deeply unprofitable. Reduce Meta spend and reallocate budget to Apple.'
+        },
+        apple: {
+          spend: 1078, spendWoW: -6, installs: 482, installsWoW: -27,
+          cpi: 2.24, cpiWoW: 28, cpt: 16, cptWoW: -21,
+          cac: 33, cacWoW: -57, roas: 5.15, roasWoW: 194,
+          action: 'SCALE',
+          note: 'True Apple installs 482 (-27% WoW), spend $1,078 (-6%). CPI $2.24 (+28% WoW), CPT $16 (-21%). CAC $33 (-57% WoW), ROAS 5.15x (+194% WoW) — highly profitable and improving. Scale Apple spend aggressively.'
+        },
+        google: {
+          spend: 92, spendWoW: -88, installs: 4, installsWoW: -87,
+          cpi: 23.07, cpiWoW: -7, cpt: 0, cptWoW: 0,
+          cac: 0, cacWoW: -100, roas: 0, roasWoW: -100,
+          action: 'MONITOR',
+          note: 'True Google installs 4 (-87% WoW), spend $92 (-88%). No paid trials or subs this week. CPI $23.07 (-7% WoW). Monitor and investigate conversion tracking — consider pausing.'
+        },
+        organic: {
+          installs: 1233, installsWoW: -20, trials: 215, trialsWoW: -2,
+          conversions: 58, conversionsWoW: -17, subs: 45, subsWoW: 200,
+          installToTrial: 17.44, installToTrialWoW: 22,
+          trialToPaid: 26.98, trialToPaidWoW: -15
+        },
+        totalPaid: {
+          spend: 16679, installs: 1207, trials: 178, conversions: 48, subs: 13,
+          installsWoW: -2, trialsWoW: 8, conversionsWoW: 17, subsWoW: 63,
+          cpi: 13.82, cpt: 93, cac: 275, roas: -0.4,
+          installToTrial: 14.75, installToTrialWoW: 10,
+          trialToPaid: 26.97, trialToPaidWoW: 9
+        },
+        activationRate: 7.68, activationRateWoW: 92,
+        onboardingCompletionRate: 46.69, onboardingCompletionRateWoW: -7
+      },
       'Mar 23-29, 2026': {
         dateRange: 'Mar 23-29, 2026',
         totalSpend: 13986,
