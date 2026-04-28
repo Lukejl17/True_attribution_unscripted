@@ -697,6 +697,58 @@
     const { useState, useEffect } = React;
     
     const DATA = {
+      'Apr 20-26, 2026': {
+        dateRange: 'Apr 20-26, 2026',
+        totalSpend: 21837,
+        blendedNetRev: 24458,
+        blendedNetROAS: 1.1,
+        spendWoW: 28,
+        revWoW: -19,
+        roasWoW: -37,
+        recommendation: "Total spend +28% WoW to $21,837 — driven by Meta (+30%). Blended ROAS collapsed to 1.1x (-37% WoW) as Meta efficiency deteriorates sharply. Meta ROAS 0.17x (-68% WoW) with CAC $802 (+167%) — deeply unprofitable, reduce urgently and reallocate budget to Apple. Apple ROAS 3.92x (+38% WoW), CPI $1.37 (-37%), CAC $41 (-38%) — standout performer, scale aggressively. Organic installs -19% WoW. Activation rate 9.59% (+13% WoW), onboarding 47.02% (-7% WoW).",
+        meta: {
+          spend: 20552, spendWoW: 30, installs: 960, installsWoW: 13,
+          cpi: 21.41, cpiWoW: 15, cpt: 138, cptWoW: 15,
+          cac: 802, cacWoW: 167, roas: 0.17, roasWoW: -68,
+          action: 'REDUCE',
+          note: 'True Meta installs 960 (+13% WoW), spend $20,552 (+30%). CPI $21.41 (+15% WoW), CPT $138 (+15%). CAC $802 (+167% WoW), ROAS 0.17x (-68% WoW) — deeply unprofitable and rapidly deteriorating. Reduce Meta spend urgently and reallocate to Apple.'
+        },
+        apple: {
+          spend: 1285, spendWoW: -3, installs: 939, installsWoW: 55,
+          cpi: 1.37, cpiWoW: -37, cpt: 10, cptWoW: -25,
+          cac: 41, cacWoW: -38, roas: 3.92, roasWoW: 38,
+          action: 'SCALE',
+          note: 'True Apple installs 939 (+55% WoW), spend $1,285 (-3%). CPI $1.37 (-37% WoW), CPT $10 (-25%). CAC $41 (-38% WoW), ROAS 3.92x (+38% WoW) — highly profitable and improving strongly. Scale Apple Ads aggressively with budget reallocated from Meta.'
+        },
+        google: {
+          spend: 0, spendWoW: 0, installs: 0, installsWoW: 0,
+          cpi: 0, cpiWoW: 0, cpt: 0, cptWoW: 0,
+          cac: 0, cacWoW: 0, roas: 0, roasWoW: 0,
+          action: 'MONITOR',
+          note: 'True Google zero installs this week. Spend paused at $0. No paid trials or subs. Monitor reactivation opportunity.'
+        },
+        organic: {
+          installs: 1120, installsWoW: -19,
+          trials: 242, trialsWoW: -23,
+          conversions: 61, conversionsWoW: -20,
+          subs: 35, subsWoW: -8,
+          installToTrial: 21.61, installToTrialWoW: -5,
+          trialToPaid: 25.21, trialToPaidWoW: 4
+        },
+        totalPaid: {
+          spend: 21837, installs: 1899,
+          trials: 284, conversions: 35, subs: 21,
+          installsWoW: 31, trialsWoW: 20,
+          conversionsWoW: -30, subsWoW: -5,
+          cpi: 11.50, cpt: 77, cac: 384, roas: -0.61,
+          installToTrial: 14.95, installToTrialWoW: -8,
+          trialToPaid: 12.32, trialToPaidWoW: -42
+        },
+        activationRate: 9.59,
+        activationRateWoW: 13,
+        onboardingCompletionRate: 47.02,
+        onboardingCompletionRateWoW: -7
+      },
       'Apr 13-19, 2026': {
         dateRange: 'Apr 13-19, 2026',
         totalSpend: 17076,
